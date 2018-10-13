@@ -1,0 +1,6 @@
+{
+    "board": "espressif:esp32:d32",
+    "configuration": "PartitionScheme=default,FlashFreq=80,UploadSpeed=921600,DebugLevel=info",
+    "sketch": "ov2640_web.ino",
+    "port": "COM65"
+}
