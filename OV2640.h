@@ -10,14 +10,19 @@
 
 class OV2640
 {
-  public:
-    OV2640(){};
-    ~OV2640(){};
-    esp_err_t init(camera_config_t config);
-    void run(void);
+public:
+  OV2640(){};
+  ~OV2640(){};
+  esp_err_t init(camera_config_t config);
+  void run(void);
+  size_t getSize(void);
+  uint8_t *getfb(void);
+  int getWidth(void);
+  int getHeight(void);
+  
 
-  private:
-    camera_pixelformat_t _pixel_format;
+private:
+  camera_pixelformat_t _pixel_format;
 };
 
 #endif //OV2640_H_

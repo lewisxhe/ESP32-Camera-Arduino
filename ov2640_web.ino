@@ -2,17 +2,55 @@
 #include "esp_log.h"
 #include <WiFi.h>
 #include <WiFiMulti.h>
-
+#include <WebServer.h>
+#include <WiFiClient.h>
 
 OV2640 cam;
-WiFiServer server(80);
-const char *ssid = "xinyuan";         // Put your SSID here
+WebServer server(80);
+const char *ssid = "xinyuan";      // Put your SSID here
 const char *password = "12345678"; // Put your PASSWORD here
 
+/*
+
+https://imys.net/20180703/multipart-x-mixed-replace.html
+
+0:
+HTTP/1.1 200 OK
+Content-type: multipart/x-mixed-replace; boundary=123456789000000000000987654321
+1-~~~~~~~..
+Content-length: 21600
+Content-type: image/jpg
+
+
+*/
+void handle_jpg_stream(void)
+{
+  String length = "";
+  size_t size = 0;
+ 
+  WiFiClient client = server.client();
+  String response = "HTTP/1.1 200 OK\r\n";
+  response += "Content-Type: multipart/x-mixed-replace; boundary=frame\r\n\r\n";
+  server.sendContent(response);
+
+  while (1)
+  {
+    cam.run();
+    if (!client.connected())
+      break;
+    response = "--frame\r\n";
+    response += "Content-Type: image/jpeg\r\n\r\n";
+    server.sendContent(response);
+
+    client.write((char *)cam.getfb(),cam.getSize());
+    if (!client.connected())
+      break;
+  }
+}
 
 void setup()
 {
-  esp_log_level_set("*", ESP_LOG_VERBOSE);
+  esp_log_level_set("*", ESP_LOG_DEBUG);
   Serial.begin(115200);
   while (!Serial)
   {
@@ -40,27 +78,24 @@ void setup()
 
   cam.init(camera_config);
 
-  // WiFi.mode(WIFI_STA);
-  // WiFi.begin(ssid, password);
-  // while (WiFi.status() != WL_CONNECTED)
-  // {
-  //   delay(500);
-  //   Serial.print(F("."));
-  // }
-  // Serial.println(F("WiFi connected"));
-  // Serial.println("");
-  // Serial.println(WiFi.localIP());
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(F("."));
+  }
+  Serial.println(F("WiFi connected"));
+  Serial.println("");
+  Serial.println(WiFi.localIP());
 
-  // // Start the server
-  // server.on("/capture", HTTP_GET, serverCapture);
-  // server.on("/stream", HTTP_GET, serverStream);
-  // server.onNotFound(handleNotFound);
-  // server.begin();
-  // Serial.println(F("Server started"));
+  server.on("/", HTTP_GET, handle_jpg_stream);
+
+  server.begin();
 }
 
 void loop()
 {
-  cam.run();
+  server.handleClient();
   // server.handleClient();
 }

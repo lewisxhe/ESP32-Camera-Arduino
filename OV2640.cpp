@@ -3,16 +3,22 @@
 #define CAMERA_PIXEL_FORMAT CAMERA_PF_GRAYSCALE
 #define CAMERA_FRAME_SIZE CAMERA_FS_SVGA
 
-
 void OV2640::run(void)
 {
     camera_run();
-    camera_print_fb();
-    delay(1000);
 }
 
+size_t OV2640::getSize(void)
+{
+    return camera_get_data_size();
+}
 
-esp_err_t OV2640::init( camera_config_t config)
+uint8_t *OV2640::getfb(void)
+{
+    return camera_get_fb();
+}
+
+esp_err_t OV2640::init(camera_config_t config)
 {
     // Wire.begin(config->pin_sscb_sda,config->pin_sscb_scl);
 
@@ -48,10 +54,10 @@ esp_err_t OV2640::init( camera_config_t config)
 
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
 
-    // blink led 
+    // blink led
     // gpio_set_direction(CAMERA_LED_GPIO, GPIO_MODE_OUTPUT);
     // gpio_set_level(CAMERA_LED_GPIO, 1);
-    
+
     config.pixel_format = _pixel_format;
     err = camera_init(&config);
     if (err != ESP_OK)
@@ -61,4 +67,14 @@ esp_err_t OV2640::init( camera_config_t config)
     }
 
     return ESP_OK;
+}
+
+int OV2640::getWidth(void)
+{
+    return camera_get_fb_width();
+}
+
+int OV2640::getHeight(void)
+{
+    return camera_get_fb_height();
 }
