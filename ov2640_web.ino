@@ -64,6 +64,18 @@ void handle_jpg(void)
   client.write((char *)cam.getfb(), cam.getSize());
 }
 
+void handleNotFound()
+{
+  String message = "Server is running!\n\n";
+  message += "URI: ";
+  message += server.uri();
+  message += "\nMethod: ";
+  message += (server.method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nArguments: ";
+  message += server.args();
+  message += "\n";
+  server.send(200, "text/plain", message);
+}
 
 void setup()
 {
@@ -110,6 +122,7 @@ void setup()
 
   server.on("/", HTTP_GET, handle_jpg_stream);
   server.on("/jpg", HTTP_GET, handle_jpg);
+  server.onNotFound(handleNotFound);
   server.begin();
 }
 

@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#define _NDEBUG
 #define CONFIG_OV2640_SUPPORT 1
 #define CONFIG_OV7725_SUPPORT 0
 

@@ -715,7 +715,7 @@ static void IRAM_ATTR signal_dma_buf_received(bool *need_yield)
     BaseType_t ret = xQueueSendFromISR(s_state->data_ready, &dma_desc_filled, &higher_priority_task_woken);
     if (ret != pdTRUE)
     {
-        // ESP_EARLY_LOGW(TAG, "queue send failed (%d), dma_received_count=%d", ret, s_state->dma_received_count);
+        ESP_EARLY_LOGW(TAG, "queue send failed (%d), dma_received_count=%d", ret, s_state->dma_received_count);
     }
     *need_yield = (ret == pdTRUE && higher_priority_task_woken == pdTRUE);
 }
@@ -725,7 +725,7 @@ static void IRAM_ATTR i2s_isr(void *arg)
     I2S0.int_clr.val = I2S0.int_raw.val;
     bool need_yield;
     signal_dma_buf_received(&need_yield);
-    // ESP_EARLY_LOGV(TAG, "isr, cnt=%d", s_state->dma_received_count);
+    ESP_EARLY_LOGV(TAG, "isr, cnt=%d", s_state->dma_received_count);
     if (s_state->dma_received_count == s_state->height * s_state->dma_per_line)
     {
         i2s_stop();
