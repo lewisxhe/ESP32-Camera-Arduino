@@ -1,1 +1,1 @@
-##The current project is being edited
+## The current project is being edited
