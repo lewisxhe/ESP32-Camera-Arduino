@@ -16,6 +16,7 @@
 
 #include "esp_err.h"
 #include "driver/ledc.h"
+#include "sensor.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -160,6 +161,9 @@ esp_err_t camera_run();
  */
 void camera_print_fb();
 
+
+int camera_set_hmirror(int en);
+int camera_set_gainceiling(gainceiling_t gain);
 
 #ifdef __cplusplus
 }

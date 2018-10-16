@@ -140,8 +140,8 @@
 
 #define REG04               0x04
 #define REG04_DEFAULT       0x28
-#define REG04_HFLIP_IMG     0x80
 #define REG04_VFLIP_IMG     0x40
+#define REG04_HFLIP_IMG     0x80
 #define REG04_VREF_EN       0x10
 #define REG04_HREF_EN       0x08
 #define REG04_SET(x)        (REG04_DEFAULT|x)

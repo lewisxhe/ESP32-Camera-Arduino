@@ -19,10 +19,16 @@ public:
   uint8_t *getfb(void);
   int getWidth(void);
   int getHeight(void);
-  
+  camera_framesize_t getFrameSize(void);
+  camera_pixelformat_t getPixelFormat(void);
+
+  void setFrameSize(camera_framesize_t size);
+  void setPixelFormat(camera_pixelformat_t format);
 
 private:
-  camera_pixelformat_t _pixel_format;
+  // camera_framesize_t _frame_size;
+  // camera_pixelformat_t _pixel_format;
+  camera_config_t _cam_config;
 };
 
 #endif //OV2640_H_

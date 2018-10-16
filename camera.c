@@ -30,11 +30,9 @@
 #include "driver/periph_ctrl.h"
 #include "esp_intr_alloc.h"
 #include "esp_log.h"
-#include "sensor.h"
 #include "sccb.h"
 #include "camera.h"
 #include "camera_common.h"
-#include "xclk.h"
 #if CONFIG_OV2640_SUPPORT
 #include "ov264_drive.h"
 #endif
@@ -48,6 +46,9 @@
 #define REG_VER 0x0B
 #define REG_MIDH 0x1C
 #define REG_MIDL 0x1D
+
+static esp_err_t camera_enable_out_clock(camera_config_t *config);
+static void camera_disable_out_clock();
 
 static const char *TAG = "camera";
 
@@ -210,7 +211,7 @@ esp_err_t camera_init(const camera_config_t *config)
     s_state->sensor.set_pixformat(&s_state->sensor, pix_format);
 
     ESP_LOGD(TAG, "Setting frame size to %dx%d", s_state->width, s_state->height);
-    if (s_state->sensor.set_framesize(&s_state->sensor, frame_size) != 0)
+    if (s_state->sensor.set_framesize(&s_state->sensor, FRAMESIZE_SVGA) != 0)
     {
         ESP_LOGE(TAG, "Failed to set frame size");
         err = ESP_ERR_CAMERA_FAILED_TO_SET_FRAME_SIZE;
@@ -877,7 +878,6 @@ static void IRAM_ATTR dma_filter_rgb565(const dma_elem_t *src, lldesc_t *dma_des
     }
 }
 
-
 void camera_print_fb()
 {
     /* Number of pixels to skip
@@ -915,4 +915,52 @@ void camera_print_fb()
         }
         printf("\n");
     }
+}
+
+static esp_err_t camera_enable_out_clock(camera_config_t *config)
+{
+    periph_module_enable(PERIPH_LEDC_MODULE);
+
+    ledc_timer_config_t timer_conf;
+    timer_conf.duty_resolution = 1;
+    timer_conf.freq_hz = config->xclk_freq_hz;
+    timer_conf.speed_mode = LEDC_HIGH_SPEED_MODE;
+    timer_conf.timer_num = config->ledc_timer;
+    esp_err_t err = ledc_timer_config(&timer_conf);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "ledc_timer_config failed, rc=%x", err);
+        return err;
+    }
+
+    ledc_channel_config_t ch_conf;
+    ch_conf.channel = config->ledc_channel;
+    ch_conf.timer_sel = config->ledc_timer;
+    ch_conf.intr_type = LEDC_INTR_DISABLE;
+    ch_conf.duty = 1;
+    ch_conf.speed_mode = LEDC_HIGH_SPEED_MODE;
+    ch_conf.gpio_num = config->pin_xclk;
+    ch_conf.hpoint = 0;
+    err = ledc_channel_config(&ch_conf);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "ledc_channel_config failed, rc=%x", err);
+        return err;
+    }
+    return ESP_OK;
+}
+
+static void camera_disable_out_clock()
+{
+    periph_module_disable(PERIPH_LEDC_MODULE);
+}
+
+int camera_set_hmirror(int en)
+{
+    return s_state->sensor.set_hmirror(&s_state->sensor, en);
+}
+
+int camera_set_gainceiling(gainceiling_t gain)
+{
+    return s_state->sensor.set_gainceiling(&s_state->sensor, gain);
 }
