@@ -69,6 +69,12 @@ void OV2640::setPixelFormat(camera_pixelformat_t format)
     }
 }
 
+void OV2640::setVflip(bool enable)
+{
+    camera_set_vflip(enable);
+}
+
+
 esp_err_t OV2640::init(camera_config_t config)
 {
     camera_model_t camera_model;
@@ -103,6 +109,6 @@ esp_err_t OV2640::init(camera_config_t config)
         ESP_LOGE(TAG, "Camera init failed with error 0x%x", err);
         return err;
     }
-
+    
     return ESP_OK;
 }

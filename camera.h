@@ -162,9 +162,9 @@ esp_err_t camera_run();
  */
 void camera_print_fb();
 
-
 int camera_set_hmirror(int en);
 int camera_set_gainceiling(gainceiling_t gain);
+int camera_set_vflip(int en);
 
 #ifdef __cplusplus
 }

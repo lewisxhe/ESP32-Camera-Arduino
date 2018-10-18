@@ -964,3 +964,8 @@ int camera_set_gainceiling(gainceiling_t gain)
 {
     return s_state->sensor.set_gainceiling(&s_state->sensor, gain);
 }
+
+int camera_set_vflip(int en)
+{
+    return s_state->sensor.set_vflip(&s_state->sensor, en);
+}

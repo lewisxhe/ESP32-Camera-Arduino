@@ -24,6 +24,7 @@ public:
 
   void setFrameSize(camera_framesize_t size);
   void setPixelFormat(camera_pixelformat_t format);
+  void setVflip(bool enable);
 
 private:
   // camera_framesize_t _frame_size;
