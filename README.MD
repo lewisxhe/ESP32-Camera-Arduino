@@ -1,4 +1,4 @@
-ESP32 Camera Ardunio Libarry
+ESP32 Camera Ardunio Library
 ====================
 Each example is tested using the TTGO T-Journal.
 
