@@ -1,18 +1,13 @@
 #include "OV2640.h"
-#include "esp_log.h"
 #include <WiFi.h>
-#include <WiFiMulti.h>
 #include <WebServer.h>
 #include <WiFiClient.h>
-
-#define CHANNEL 1
 
 
 OV2640 cam;
 WebServer server(80);
-WiFiMulti wifiMulti;
-const char *ssid = "xinyuan";      // Put your SSID here
-const char *password = "12345678"; // Put your PASSWORD here
+const char *ssid =      "<your wifi ssid>";      // Put your SSID here
+const char *password =  "<your wifi password>";  // Put your PASSWORD here
 
 IPAddress apIP = IPAddress(192, 168, 1, 1);
 
@@ -47,10 +42,8 @@ void handle_jpg(void)
     cam.run();
     if (!client.connected())
     {
-        Serial.println("fail ... \n");
         return;
     }
-    // MIME 协议
     String response = "HTTP/1.1 200 OK\r\n";
     response += "Content-disposition: inline; filename=capture.jpg\r\n";
     response += "Content-type: image/jpeg\r\n\r\n";
@@ -73,7 +66,6 @@ void handleNotFound()
 
 void setup()
 {
-    esp_log_level_set("*", ESP_LOG_DEBUG);
     Serial.begin(115200);
     while (!Serial)
     {
@@ -103,20 +95,9 @@ void setup()
 
     cam.init(camera_config);
 
-    //   WiFi.mode(WIFI_STA);
-    //   WiFi.begin(ssid, password);
-    //   while (WiFi.status() != WL_CONNECTED)
-    //   {
-    //     delay(500);
-    //     Serial.print(F("."));
-    //   }
-    //   Serial.println(F("WiFi connected"));
-    //   Serial.println("");
-    //   Serial.println(WiFi.localIP());
-
     WiFi.mode(WIFI_AP);
     WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-    bool result = WiFi.softAP("haha", "12345678", CHANNEL, 0);
+    bool result = WiFi.softAP("TTGO-CAMERA", "12345678", 1, 0);
     if (!result)
     {
         Serial.println("AP Config failed.");

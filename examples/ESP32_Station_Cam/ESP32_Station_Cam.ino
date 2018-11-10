@@ -1,28 +1,24 @@
 #include "OV2640.h"
-#include "esp_log.h"
 #include <WiFi.h>
-#include <WiFiMulti.h>
 #include <WebServer.h>
 #include <WiFiClient.h>
 
+#define ENABLE_OLED //if want use oled ,turn on thi macro
+
+#ifdef ENABLE_OLED
+#include "SSD1306.h"
+#define OLED_ADDRESS 0x3c
+#define I2C_SDA 14
+#define I2C_SCL 13
+SSD1306Wire display(OLED_ADDRESS, I2C_SDA, I2C_SCL, GEOMETRY_128_32);
+#endif
+
 OV2640 cam;
 WebServer server(80);
-const char *ssid = "xinyuan";      // Put your SSID here
-const char *password = "12345678"; // Put your PASSWORD here
 
-/*
+const char *ssid =     "<your wifi ssid>";         // Put your SSID here
+const char *password = "<your wifi password>";     // Put your PASSWORD here
 
-https://imys.net/20180703/multipart-x-mixed-replace.html
-
-0:
-HTTP/1.1 200 OK
-Content-type: multipart/x-mixed-replace; boundary=123456789000000000000987654321
-1-~~~~~~~..
-Content-length: 21600
-Content-type: image/jpg
-
-
-*/
 void handle_jpg_stream(void)
 {
   WiFiClient client = server.client();
@@ -56,7 +52,6 @@ void handle_jpg(void)
     Serial.println("fail ... \n");
     return;
   }
-  // MIME 协议
   String response = "HTTP/1.1 200 OK\r\n";
   response += "Content-disposition: inline; filename=capture.jpg\r\n";
   response += "Content-type: image/jpeg\r\n\r\n";
@@ -79,12 +74,12 @@ void handleNotFound()
 
 void setup()
 {
-  esp_log_level_set("*", ESP_LOG_DEBUG);
   Serial.begin(115200);
   while (!Serial)
   {
     ;
   }
+
   camera_config_t camera_config;
   camera_config.ledc_channel = LEDC_CHANNEL_0;
   camera_config.ledc_timer = LEDC_TIMER_0;
@@ -119,6 +114,15 @@ void setup()
   Serial.println(F("WiFi connected"));
   Serial.println("");
   Serial.println(WiFi.localIP());
+
+#ifdef ENABLE_OLED
+  display.init();
+  display.flipScreenVertically();
+  display.setFont(ArialMT_Plain_16);
+  display.setTextAlignment(TEXT_ALIGN_CENTER);
+  display.drawString(128 / 2, 32 / 2, WiFi.localIP().toString());
+  display.display();
+#endif
 
   server.on("/", HTTP_GET, handle_jpg_stream);
   server.on("/jpg", HTTP_GET, handle_jpg);

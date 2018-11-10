@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map ESP32_Camera
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+OV2640	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+run	KEYWORD2
+detach	KEYWORD2
+getSize	KEYWORD2
+getfb	KEYWORD2
+getWidth	KEYWORD2
+getHeight	KEYWORD2
+getFrameSize	KEYWORD2
+getPixelFormat 		KEYWORD2
+setFrameSize		KEYWORD2
+setPixelFormat  KEYWORD2
+setVflip    KEYWORD2
+#######################################
+# Constants (LITERAL1)
+#######################################
