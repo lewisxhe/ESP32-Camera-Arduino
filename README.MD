@@ -5,7 +5,7 @@ Each example is tested using the TTGO T-Journal.
 ![jpg](./images/TTGOcam.jpg)
 
 The example contains three programs:
-- Upload a photo to the BIGIOT platform every 30 seconds
+- Upload a photo to the [BIGIOT](https://www.bigiot.net/) platform every 30 seconds
 - WiFi Soft-AP mode video stream 
 - WiFi Station mode video stream
 
@@ -25,3 +25,4 @@ For more info, see https://www.arduino.cc/en/Guide/Libraries
 - Change the WiFi ssid and password in the program.
 - In Sota-AP you should connect `TTGO-CAMERA` and password is "`12345678`" , enter `192.168.4.1` in the browser to access the video stream.
 - In the Station mode, If you use OLED ,you should enter the IP address displayed in the OLED for access. You can also enter the IP address in the log to access
+- If you run the [BIGIOT](https://www.bigiot.net/) sample program, you need to add the device ID, interface ID, and password to add your wifi account.
