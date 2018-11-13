@@ -6,8 +6,6 @@
 
 OV2640 cam;
 WebServer server(80);
-const char *ssid =      "<your wifi ssid>";      // Put your SSID here
-const char *password =  "<your wifi password>";  // Put your PASSWORD here
 
 IPAddress apIP = IPAddress(192, 168, 1, 1);
 
