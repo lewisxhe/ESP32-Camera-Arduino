@@ -3,12 +3,20 @@
 #include <WebServer.h>
 #include <WiFiClient.h>
 
+#define ENABLE_OLED //if want use oled ,turn on thi macro
+
+#ifdef ENABLE_OLED
+#include "SSD1306.h"
+#define OLED_ADDRESS 0x3c
+#define I2C_SDA 14
+#define I2C_SCL 13
+SSD1306Wire display(OLED_ADDRESS, I2C_SDA, I2C_SCL, GEOMETRY_128_32);
+#endif
 
 OV2640 cam;
 WebServer server(80);
 
 IPAddress apIP = IPAddress(192, 168, 1, 1);
-
 
 void handle_jpg_stream(void)
 {
@@ -104,8 +112,19 @@ void setup()
     else
     {
         Serial.println("AP Config Success.");
-        Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress());
+        Serial.print("AP MAC: ");
+        Serial.println(WiFi.softAPmacAddress());
     }
+
+#ifdef ENABLE_OLED
+    display.init();
+    display.flipScreenVertically();
+    display.setFont(ArialMT_Plain_16);
+    display.setTextAlignment(TEXT_ALIGN_CENTER);
+    display.drawString(128 / 2, 32 / 2, WiFi.softAPIP().toString());
+    display.display();
+#endif
+
     server.on("/", HTTP_GET, handle_jpg_stream);
     server.on("/jpg", HTTP_GET, handle_jpg);
     server.onNotFound(handleNotFound);
