@@ -15,6 +15,7 @@ This library is based on [esp32-cam-demo](https://github.com/igrr/esp32-cam-demo
 
 # Installing
 To install this library:
+- Install [oled-ssd1306](https://github.com/ThingPulse/esp8266-oled-ssd1306),If you want to use oled.
 - Install it using the Arduino Library manager ("Sketch" -> "Include Library" -> "Manage Libraries..."), or
 - Download a zipfile from github using the "Download ZIP" button and install it using the IDE ("Sketch" -> "Include Library" -> "Add .ZIP Library..."
 - Clone this git repository into your sketchbook/libraries folder.
