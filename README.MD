@@ -1,8 +1,9 @@
+## Important
+This library has been deprecated, the official Arduino library already supports Camera, please update the Arduino library for use [esp32-camera](https://github.com/espressif/esp32-camera/issues/7)
+
+
 ESP32 Camera Ardunio Library
 ====================
-## Important
-This library has been deprecated, the official Arduino library already supports Camera, please update the Arduino library for use [esp32-camera] (https://github.com/espressif/esp32-camera/issues/7)
-
 
 Each example is tested using the TTGO T-Journal.
 
